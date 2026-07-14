@@ -1,0 +1,31 @@
+# Bağımlılıklar
+node_modules/
+
+# Next.js build çıktısı
+.next/
+out/
+
+# ÖNEMLİ: Ortam değişkenleri — asla commit etme!
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Firebase hizmet hesabı anahtarı (eğer dosya olarak kullanılırsa)
+*-service-account*.json
+firebase-adminsdk*.json
+
+# Editör/IDE
+.DS_Store
+.vscode/settings.json
+*.pem
+
+# Debug logları
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript derleme hataları
+*.tsbuildinfo
+next-env.d.ts

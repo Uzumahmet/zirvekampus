@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────
+   TASARIM SİSTEMİ — CSS DEĞİŞKENLERİ
+   ───────────────────────────────────────────────────────────────── */
+:root {
+  /* Özel Platform Renkleri */
+  --erciyes-red: #e8272a;
+  --erciyes-red-hover: #c71f22;
+  --erciyes-red-glow: rgba(232, 39, 42, 0.20);
+  --erciyes-gold: #f59e0b;
+
+  /* Tipografi */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-reading: 'Merriweather', Georgia, serif;
+
+  --radius: 0.5rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   DARK MODE (Varsayılan — saf siyah editorial stil)
+   ───────────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    --background: 0 0% 98%;          /* #fafafa - editorial aydınlık arka plan */
+    --foreground: 0 0% 9%;           /* #171717 - koyu metin */
+    --card: 0 0% 100%;               /* #ffffff */
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 358 82% 52%;          /* #e8272a kırmızı */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 94%;           /* #f0f0f0 */
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;    /* #737373 */
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 88%;              /* #e0e0e0 */
+    --input: 0 0% 94%;
+    --ring: 358 82% 52%;
+  }
+
+  .dark {
+    --background: 0 0% 5%;           /* #0d0d0d — neredeyse saf siyah */
+    --foreground: 0 0% 96%;          /* #f5f5f5 */
+    --card: 0 0% 8%;                 /* #141414 */
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 358 82% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 12%;           /* #1f1f1f */
+    --secondary-foreground: 0 0% 90%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 52%;    /* #858585 */
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 15%;              /* #262626 */
+    --input: 0 0% 12%;
+    --ring: 358 82% 52%;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   DISPLAY / HEADING TİPOGRAFİSİ
+   Büyük başlıklarda Playfair Display — tıpkı referans tasarım gibi
+   ───────────────────────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Hero başlıklarındaki italik kırmızı kelimeler */
+.display-italic-red {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--erciyes-red);
+}
+
+/* Sayfa büyük başlık — örn: "Okumaya değer her şey burada" */
+.hero-heading {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/* Bölüm başlıkları (h2 düzeyi) */
+.section-heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   OKUMA ODAKLI TİPOGRAFİ (.article-body)
+   ───────────────────────────────────────────────────────────────── */
+.article-body {
+  font-family: var(--font-reading);
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: hsl(var(--foreground));
+}
+
+.article-body h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: hsl(var(--foreground));
+}
+
+.article-body h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.article-body p {
+  margin-bottom: 1.5rem;
+}
+
+.article-body a {
+  color: var(--erciyes-red);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.article-body blockquote {
+  border-left: 3px solid var(--erciyes-red);
+  padding-left: 1.25rem;
+  margin-left: 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   YARDIMCI SINIFLAR
+   ───────────────────────────────────────────────────────────────── */
+
+/* Kırmızı nokta aksan — "Forum." gibi */
+.red-dot::after {
+  content: '.';
+  color: var(--erciyes-red);
+}
+
+/* Sol kırmızı çizgi */
+.accent-line {
+  position: relative;
+}
+.accent-line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--erciyes-red);
+  border-radius: 2px;
+}
+
+/* Glassmorphism Kart */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Kırmızı Parıltı Efekti */
+.glow-red {
+  box-shadow: 0 0 20px var(--erciyes-red-glow);
+}
+
+/* Scroll Progress Bar */
+.reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--erciyes-red), var(--erciyes-gold));
+  z-index: 9999;
+  transform-origin: left;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ANİMASYONLAR
+   ───────────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 var(--erciyes-red-glow); }
+  50%       { box-shadow: 0 0 0 8px transparent; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--secondary)) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SCROLLBAR
+   ───────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--erciyes-red); }
+
+/* ─────────────────────────────────────────────────────────────────
+   TİPTAP EDİTÖR
+   ───────────────────────────────────────────────────────────────── */
+.tiptap-editor .ProseMirror {
+  min-height: 60vh;
+  outline: none;
+  font-family: var(--font-reading);
+  font-size: 1.125rem;
+  line-height: 1.8;
+  padding: 2rem 0;
+}
+
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   MOBİL HAMBURGER MENÜ
+   ───────────────────────────────────────────────────────────────── */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ERİŞİLEBİLİRLİK
+   ───────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

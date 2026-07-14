@@ -1,0 +1,36 @@
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  - variable: NEXT_PUBLIC_APP_URL
+    value: "https://erciyes-kampus--globalog2.us-central1.hosted.app"
+  - variable: NEXT_PUBLIC_SUPABASE_URL
+    value: "https://lgntnqhgimnqmgxgoqca.supabase.co"
+  - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxnbnRucWhnaW1ucW1neGdvcWNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxOTY5MzYsImV4cCI6MjA5Nzc3MjkzNn0.i2CK8D-TaxsBeVB1d_o0k-AyqLpjPD_0uqIo5hRSBR8"
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: "AIzaSyDfckbxgI7LIeubn95kddKj4za3W2GABjU"
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "globalog2.firebaseapp.com"
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "globalog2"
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "globalog2.firebasestorage.app"
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "482409114480"
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:482409114480:web:02ce231cd9a40ca2383db5"
+  - variable: SUPABASE_SERVICE_ROLE_KEY
+    secret: supabase-service-role-key
+  - variable: FIREBASE_PROJECT_ID
+    secret: firebase-project-id
+  - variable: FIREBASE_CLIENT_EMAIL
+    secret: firebase-client-email
+  - variable: FIREBASE_PRIVATE_KEY
+    secret: firebase-private-key
+  - variable: GEMINI_API_KEY
+    secret: gemini-api-key
