@@ -12,22 +12,32 @@ import type { MetadataRoute } from 'next';
 export default function robots(): MetadataRoute.Robots {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://erciyeskampus.com';
 
-  return {
-    rules: [
-      {
-        // Bütün botlara ve AI tarayıcılarına sınırsız genel erişim izni
-        userAgent: '*',
-        allow: '/',
-        disallow: [
-          '/yazar-paneli',         // Yazar kontrol paneli (giriş gerektirir)
-          '/editor-paneli',        // Editör kontrol paneli (giriş gerektirir)
-          '/api/',                 // API uç noktaları
-          '/_next/',               // Next.js dahili klasörü
-          '/giris-yap',            
-          '/kayit-ol',             
-        ],
-      },
+  const userAgents = [
+    '*',
+    'Googlebot',
+    'Google-Extended',
+    'GPTBot',
+    'ChatGPT-User',
+    'Bingbot',
+    'ClaudeBot',
+    'Applebot'
+  ];
+
+  const rules = userAgents.map((ua) => ({
+    userAgent: ua,
+    allow: '/',
+    disallow: [
+      '/yazar-paneli',         // Yazar kontrol paneli (giriş gerektirir)
+      '/editor-paneli',        // Editör kontrol paneli (giriş gerektirir)
+      '/api/',                 // API uç noktaları
+      '/_next/',               // Next.js dahili klasörü
+      '/giris-yap',            
+      '/kayit-ol',             
     ],
+  }));
+
+  return {
+    rules,
     sitemap: `${appUrl}/sitemap.xml`,
     host: appUrl,
   };

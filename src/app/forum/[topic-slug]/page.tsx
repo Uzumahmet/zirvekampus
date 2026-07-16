@@ -76,7 +76,7 @@ export default async function ForumBaslikPage({ params }: Props) {
               <span>
                 açan:{' '}
                 <Link
-                  href={`/yazar/${(topic.creator as any).username}`}
+                  href={`/${(topic.creator as any).username}`}
                   className="text-erciyes-red hover:underline"
                 >
                   @{(topic.creator as any).username}

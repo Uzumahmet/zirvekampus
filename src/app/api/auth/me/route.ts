@@ -64,10 +64,21 @@ export async function GET(request: NextRequest) {
 
       if (insertError) throw insertError;
 
-      return NextResponse.json(newUser as Kullanici);
+      return NextResponse.json({ ...newUser, topics: [] });
     }
 
-    return NextResponse.json(existingUser as Kullanici);
+    // 4. Kullanıcı varsa, seçtiği konuları (yazar_konulari) getir
+    const { data: userTopics } = await supabaseAdmin
+      .from('yazar_konulari')
+      .select('konu_id')
+      .eq('yazar_id', uid);
+
+    const topicIds = userTopics?.map((ut) => ut.konu_id) ?? [];
+
+    return NextResponse.json({
+      ...existingUser,
+      topics: topicIds,
+    });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Kimlik doğrulama hatası';
     console.error('[Auth/me API] Hata:', message);

@@ -12,7 +12,7 @@ import { useDebounce } from '@/hooks/use-debounce';
 const TYPE_CONFIG = {
   article: { icon: FileText, label: 'Makale', href: (slug: string) => `/makale/${slug}`, color: 'text-blue-400' },
   forum: { icon: MessageSquare, label: 'Forum', href: (slug: string) => `/forum/${slug}`, color: 'text-emerald-400' },
-  user: { icon: User, label: 'Yazar', href: (slug: string) => `/yazar/${slug}`, color: 'text-erciyes-gold' },
+  user: { icon: User, label: 'Yazar', href: (slug: string) => `/${slug}`, color: 'text-erciyes-gold' },
   collection: { icon: FolderHeart, label: 'Koleksiyon', href: (slug: string) => `/koleksiyon/${slug}`, color: 'text-pink-400' },
 };
 

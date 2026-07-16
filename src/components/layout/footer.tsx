@@ -18,16 +18,18 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-card/50 mt-auto">
+    <footer className="border-t border-border bg-card/50 mt-auto hidden md:block">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
 
           {/* Marka */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-erciyes-red to-red-900 flex items-center justify-center">
-                <span className="text-white font-black text-sm">Z</span>
-              </div>
+              <img
+                src="/logo_flat.svg"
+                alt="Zirve Kampüs"
+                className="h-8 w-auto object-contain"
+              />
               <span className="font-bold text-lg text-foreground">
                 Zirve<span className="text-erciyes-red">Kampüs</span>
               </span>
@@ -39,16 +41,32 @@ export default function Footer() {
             <p className="text-[10px] text-muted-foreground/60 leading-normal max-w-xs border-l border-border/80 pl-3">
               ⚠️ Bu bağımsız bir öğrenci projesidir. Üniversite rektörlüğü veya idari birimleriyle resmi veya organik hiçbir bağı bulunmamaktadır.
             </p>
-            <div className="flex items-center gap-3 mt-5">
-              <a href="#" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Twitter">
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a href="#" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Instagram">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a href="#" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="GitHub">
-                <Github className="w-4 h-4" />
-              </a>
+            <div className="flex items-center justify-between gap-4 mt-5 max-w-sm">
+              <div className="flex items-center gap-3">
+                <a href="#" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Twitter">
+                  <Twitter className="w-4 h-4" />
+                </a>
+                <a href="#" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="Instagram">
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a href="#" className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" aria-label="GitHub">
+                  <Github className="w-4 h-4" />
+                </a>
+              </div>
+
+              {/* Logo Görsellerimiz */}
+              <div className="flex items-center gap-3 border-l border-border/80 pl-3">
+                <img
+                  src="/logo_flat.svg"
+                  alt="Zirve Kampüs"
+                  className="h-7 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity dark:invert"
+                />
+                <img
+                  src="/logo.png"
+                  alt="Zirve Kampüs"
+                  className="h-7 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity"
+                />
+              </div>
             </div>
           </div>
 

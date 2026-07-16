@@ -26,6 +26,8 @@ export interface Database {
           fakulte: string | null;
           fakulte_gizli: boolean;
           base_email: string | null;
+          school_email: string | null;
+          phone_number: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -41,6 +43,8 @@ export interface Database {
           fakulte?: string | null;
           fakulte_gizli?: boolean;
           base_email?: string | null;
+          school_email?: string | null;
+          phone_number?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -55,6 +59,8 @@ export interface Database {
           fakulte?: string | null;
           fakulte_gizli?: boolean;
           base_email?: string | null;
+          school_email?: string | null;
+          phone_number?: string | null;
           updated_at?: string;
         };
       };
@@ -337,6 +343,289 @@ export interface Database {
         Update: {
           kullanici_id?: string;
           forum_id?: string;
+        };
+      };
+
+      clubs: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string | null;
+          logo_url: string | null;
+          vision: string | null;
+          founder_id: string | null;
+          president_id: string | null;
+          created_at: string;
+          updated_at: string;
+          president_appointed_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          description?: string | null;
+          logo_url?: string | null;
+          vision?: string | null;
+          founder_id?: string | null;
+          president_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          president_appointed_at?: string;
+        };
+        Update: {
+          name?: string;
+          slug?: string;
+          description?: string | null;
+          logo_url?: string | null;
+          vision?: string | null;
+          founder_id?: string | null;
+          president_id?: string | null;
+          updated_at?: string;
+          president_appointed_at?: string;
+        };
+      };
+
+      club_members: {
+        Row: {
+          id: string;
+          club_id: string;
+          user_id: string;
+          role: string;
+          team_name: string | null;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          club_id: string;
+          user_id: string;
+          role?: string;
+          team_name?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          club_id?: string;
+          user_id?: string;
+          role?: string;
+          team_name?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+      };
+
+      club_projects: {
+        Row: {
+          id: string;
+          club_id: string;
+          title: string;
+          description: string | null;
+          image_urls: string[];
+          status: string;
+          leader_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          club_id: string;
+          title: string;
+          description?: string | null;
+          image_urls?: string[];
+          status?: string;
+          leader_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          club_id?: string;
+          title?: string;
+          description?: string | null;
+          image_urls?: string[];
+          status?: string;
+          leader_id?: string | null;
+          updated_at?: string;
+        };
+      };
+
+      club_events: {
+        Row: {
+          id: string;
+          club_id: string;
+          title: string;
+          description: string | null;
+          location: string | null;
+          event_date: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          club_id: string;
+          title: string;
+          description?: string | null;
+          location?: string | null;
+          event_date: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          club_id?: string;
+          title?: string;
+          description?: string | null;
+          location?: string | null;
+          event_date?: string;
+          updated_at?: string;
+        };
+      };
+
+      club_event_rsvps: {
+        Row: {
+          id: string;
+          event_id: string;
+          user_id: string;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          event_id: string;
+          user_id: string;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          event_id?: string;
+          user_id?: string;
+          status?: string;
+        };
+      };
+
+      club_recruitments: {
+        Row: {
+          id: string;
+          club_id: string;
+          title: string;
+          description: string;
+          requirements: string[];
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          club_id: string;
+          title: string;
+          description: string;
+          requirements?: string[];
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          club_id?: string;
+          title?: string;
+          description?: string;
+          requirements?: string[];
+          is_active?: boolean;
+          updated_at?: string;
+        };
+      };
+
+      club_recruitment_applications: {
+        Row: {
+          id: string;
+          recruitment_id: string;
+          user_id: string;
+          cover_letter: string | null;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          recruitment_id: string;
+          user_id: string;
+          cover_letter?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          recruitment_id?: string;
+          user_id?: string;
+          cover_letter?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+      };
+
+      club_handovers: {
+        Row: {
+          id: string;
+          club_id: string;
+          candidate_id: string;
+          status: string;
+          created_at: string;
+          expires_at: string;
+        };
+        Insert: {
+          id?: string;
+          club_id: string;
+          candidate_id: string;
+          status?: string;
+          created_at?: string;
+          expires_at: string;
+        };
+        Update: {
+          club_id?: string;
+          candidate_id?: string;
+          status?: string;
+          expires_at?: string;
+        };
+      };
+
+      club_handover_approvals: {
+        Row: {
+          id: string;
+          handover_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          handover_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          handover_id?: string;
+          user_id?: string;
+        };
+      };
+
+      club_violations: {
+        Row: {
+          id: string;
+          club_id: string;
+          reporter_id: string;
+          description: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          club_id: string;
+          reporter_id: string;
+          description: string;
+          created_at?: string;
+        };
+        Update: {
+          club_id?: string;
+          reporter_id?: string;
+          description?: string;
         };
       };
     };

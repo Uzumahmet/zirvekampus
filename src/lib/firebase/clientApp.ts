@@ -16,6 +16,7 @@ import {
   GoogleAuthProvider,
   type Auth,
 } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -54,6 +55,7 @@ const app: FirebaseApp =
  * Giriş/çıkış ve kullanıcı durumu için tüm bileşenlerde kullanılır.
  */
 export const auth: Auth = getAuth(app);
+export const storage = getStorage(app);
 
 /**
  * Google OAuth Sağlayıcısı.

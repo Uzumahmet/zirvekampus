@@ -113,7 +113,7 @@ export default async function KoleksiyonDetayPage({ params }: Props) {
     creator: {
       '@type': 'Person',
       name: creatorName,
-      url: `${appUrl}/yazar/${collection.creator?.username}`,
+      url: `${appUrl}/${collection.creator?.username}`,
     },
     mainEntity: {
       '@type': 'ItemList',
@@ -139,7 +139,7 @@ export default async function KoleksiyonDetayPage({ params }: Props) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-8">
         {/* Geri Dön */}
         <Link
-          href={`/yazar/${collection.creator?.username}`}
+          href={`/${collection.creator?.username}`}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-erciyes-red transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -166,7 +166,7 @@ export default async function KoleksiyonDetayPage({ params }: Props) {
 
             {/* Oluşturan Kullanıcı */}
             <Link
-              href={`/yazar/${collection.creator?.username}`}
+              href={`/${collection.creator?.username}`}
               className="flex items-center gap-3 p-3 bg-secondary/40 rounded-xl hover:bg-secondary transition-colors"
             >
               {collection.creator?.avatar_url ? (

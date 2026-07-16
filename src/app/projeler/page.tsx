@@ -1,10 +1,14 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/app/providers';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/lib/firebase/clientApp';
+import MentionTextarea from '@/components/shared/mention-textarea';
 import {
   FolderCode, Plus, Search, GraduationCap, X, Heart, MessageSquare, Eye, Calendar, Sparkles, Loader2, Link2
 } from 'lucide-react';
@@ -32,10 +36,11 @@ const ERU_FAKULTELERI = [
   'Havacılık ve Uzay Bilimleri Fakültesi'
 ];
 
-export default function ProjelerPage() {
+function ProjelerPageContent() {
   const { firebaseUser, isAuthenticated, dbUser } = useAuth();
   const { t, language } = useTranslation();
   const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
 
   // Akış Eyaletleri
   const [projects, setProjects] = useState<ProjeWithAuthor[]>([]);
@@ -48,7 +53,9 @@ export default function ProjelerPage() {
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newFaculty, setNewFaculty] = useState('');
-  const [newImagesText, setNewImagesText] = useState('');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState<number | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
 
   const fetchProjects = async () => {
@@ -78,6 +85,66 @@ export default function ProjelerPage() {
   useEffect(() => {
     fetchProjects();
   }, [firebaseUser, selectedFaculty, query]);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams.get('yeni') === 'true' && isAuthenticated) {
+      setShowModal(true);
+      // URL'den ?yeni=true parametresini temizle (geri gelince tekrar açmasın)
+      router.replace('/projeler', { scroll: false });
+    }
+  }, [searchParams, isAuthenticated]);
+
+
+  const handleProjectImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !firebaseUser) return;
+
+    const file = files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      setModalError('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      setModalError('Lütfen geçerli bir resim dosyası seçin.');
+      return;
+    }
+
+    setImageUploading(true);
+    setImageUploadProgress(0);
+    setModalError(null);
+
+    const fileExtension = file.name.split('.').pop() || 'png';
+    const filePath = `uploads/${firebaseUser.uid}/project_${Date.now()}.${fileExtension}`;
+    const storageRef = ref(storage, filePath);
+    const metadata = { contentType: file.type };
+    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setImageUploadProgress(progress);
+      },
+      (error) => {
+        console.error('Proje resmi yükleme hatası:', error);
+        setModalError('Görsel yüklenemedi: ' + error.message);
+        setImageUploading(false);
+      },
+      async () => {
+        try {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          setUploadedImages((prev) => [...prev, downloadUrl]);
+        } catch (err: any) {
+          setModalError('Bağlantı adresi alınamadı.');
+        } finally {
+          setImageUploading(false);
+          setImageUploadProgress(null);
+        }
+      }
+    );
+  };
 
   // Proje Beğenme (Akıştan)
   const handleLike = async (projectId: string, e: React.MouseEvent) => {
@@ -130,13 +197,8 @@ export default function ProjelerPage() {
       return;
     }
 
-    const imageUrls = newImagesText
-      .split('\n')
-      .map((url) => url.trim())
-      .filter((url) => url.startsWith('http://') || url.startsWith('https://'));
-
-    if (imageUrls.length === 0) {
-      setModalError('Lütfen en az 1 geçerli resim URL\'i girin.');
+    if (uploadedImages.length === 0) {
+      setModalError('Lütfen en az 1 görsel yükleyin.');
       return;
     }
 
@@ -152,7 +214,7 @@ export default function ProjelerPage() {
             title: newTitle,
             description: newDesc,
             fakulte: newFaculty,
-            imageUrls,
+            imageUrls: uploadedImages,
           }),
         });
 
@@ -161,7 +223,7 @@ export default function ProjelerPage() {
           setNewTitle('');
           setNewDesc('');
           setNewFaculty('');
-          setNewImagesText('');
+          setUploadedImages([]);
           fetchProjects(); // Yenile
         } else {
           const data = await res.json();
@@ -369,7 +431,7 @@ export default function ProjelerPage() {
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
                   {t('projects.description')}
                 </label>
-                <textarea
+                <MentionTextarea
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                   placeholder="Projenin amacı, kullanılan teknolojiler ve özellikleri..."
@@ -379,7 +441,7 @@ export default function ProjelerPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
                     {t('projects.facultySelect')}
@@ -400,17 +462,47 @@ export default function ProjelerPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">
-                    <Link2 className="w-3 h-3" /> Resim Linki (Satır satır)
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Proje Görselleri
                   </label>
-                  <textarea
-                    value={newImagesText}
-                    onChange={(e) => setNewImagesText(e.target.value)}
-                    placeholder="https://gorsel-sitesi.com/resim1.jpg"
-                    required
-                    rows={2}
-                    className="w-full px-3.5 py-1.5 rounded-xl bg-secondary border border-border text-[10px] focus:outline-none focus:border-erciyes-red resize-none"
-                  />
+                  <div className="flex flex-wrap gap-2 items-center min-h-[42px]">
+                    {uploadedImages.map((url, idx) => (
+                      <div key={idx} className="relative w-12 h-10 rounded-lg overflow-hidden border border-border group bg-secondary flex-shrink-0">
+                        <img src={url} alt="Önizleme" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setUploadedImages((prev) => prev.filter((_, i) => i !== idx))}
+                          className="absolute inset-0 bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    
+                    {imageUploading ? (
+                      <div className="w-12 h-10 rounded-lg border border-dashed border-border flex flex-col items-center justify-center text-[8px] text-muted-foreground bg-secondary/20 flex-shrink-0">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-erciyes-red" />
+                        <span>%{Math.round(imageUploadProgress ?? 0)}</span>
+                      </div>
+                    ) : (
+                      <>
+                        <input
+                          type="file"
+                          id="project-image-file"
+                          accept="image/*"
+                          onChange={handleProjectImageUpload}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor="project-image-file"
+                          className="w-12 h-10 rounded-lg border border-dashed border-border hover:border-erciyes-red hover:bg-secondary/40 transition-all flex items-center justify-center cursor-pointer text-muted-foreground hover:text-foreground flex-shrink-0"
+                          title="Görsel Ekle"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </label>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -436,5 +528,17 @@ export default function ProjelerPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProjelerPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-erciyes-red" />
+      </div>
+    }>
+      <ProjelerPageContent />
+    </Suspense>
   );
 }

@@ -10,6 +10,20 @@ const nextConfig = {
     serverComponentsExternalPackages: ['firebase-admin'],
   },
 
+  // SWC ile daha hızlı derleme (Babel yerine)
+  swcMinify: true,
+
+  // Production'da source map üretme → build daha hızlı
+  productionBrowserSourceMaps: false,
+
+  // TypeScript hatalarında build durmasın (CI için isteğe bağlı)
+  // typescript: { ignoreBuildErrors: false },
+
+  // ESLint'i build sırasında çalıştırma (ayri komutla çalıştır)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   // Resim optimizasyonu için izin verilen domainler
   images: {
     remotePatterns: [
@@ -22,6 +36,11 @@ const nextConfig = {
         // Supabase Storage (kapak görselleri)
         protocol: 'https',
         hostname: '*.supabase.co',
+      },
+      {
+        // Firebase Storage
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
       },
     ],
   },

@@ -23,8 +23,14 @@ async function getYazarlar(): Promise<YazarProfile[]> {
 
   if (!kullanicilar || kullanicilar.length === 0) return [];
 
+  // Filtre: Yazar rolündekiler her zaman, admin ve editörler ise sadece show_as_writer true ise görünür.
+  const filtrelenmisKullanicilar = kullanicilar.filter((k) => {
+    if (k.role === 'yazar') return true;
+    return (k as any).show_as_writer === true;
+  });
+
   // Her yazar için istatistik ve son makale verilerini toplu getir
-  const yazarProfilPromises = kullanicilar.map(async (k) => {
+  const yazarProfilPromises = filtrelenmisKullanicilar.map(async (k) => {
     const [
       makaleResult,
       takipciResult,

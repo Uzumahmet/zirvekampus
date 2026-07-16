@@ -13,7 +13,7 @@ interface KoleksiyonaEkleButonuProps {
 }
 
 export default function KoleksiyonaEkleButonu({ itemId, itemType, className }: KoleksiyonaEkleButonuProps) {
-  const { firebaseUser, isAuthenticated, isLoading } = useAuth();
+  const { firebaseUser, isAuthenticated, isLoading, dbUser } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [cols, setCols] = useState<any[]>([]);
   const [colsLoading, setColsLoading] = useState(false);
@@ -126,7 +126,7 @@ export default function KoleksiyonaEkleButonu({ itemId, itemType, className }: K
               <div className="text-center py-4 space-y-2">
                 <p className="text-[10px] text-muted-foreground">Koleksiyonunuz bulunmuyor.</p>
                 <Link
-                  href={`/yazar/${firebaseUser?.displayName}`}
+                  href={`/${dbUser?.username || firebaseUser?.displayName}`}
                   className="inline-block text-[10px] font-bold text-erciyes-red hover:underline"
                 >
                   Profilinden oluştur +

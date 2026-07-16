@@ -51,7 +51,7 @@ export default function EntryList({ entries }: EntryListProps) {
                     <span className="text-xs text-muted-foreground italic">anonim</span>
                   ) : entry.author ? (
                     <Link
-                      href={`/yazar/${entry.author.username}`}
+                      href={`/${entry.author.username}`}
                       className="flex items-center gap-1.5 group/author"
                     >
                       {entry.author.avatar_url ? (

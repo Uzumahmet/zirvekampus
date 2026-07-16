@@ -111,7 +111,7 @@ export default function FollowSuggestions() {
 
           return (
             <div key={user.id} className="flex items-center justify-between gap-3 text-sm">
-              <Link href={`/yazar/${user.username}`} className="flex items-center gap-2.5 flex-1 min-w-0 group">
+              <Link href={`/${user.username}`} className="flex items-center gap-2.5 flex-1 min-w-0 group">
                 {user.avatar_url ? (
                   <div className="relative w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-border">
                     <Image

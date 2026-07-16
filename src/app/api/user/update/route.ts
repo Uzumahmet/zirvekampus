@@ -21,18 +21,34 @@ export async function POST(request: NextRequest) {
   try {
     const decoded = await verifyFirebaseToken(token);
     const body = await request.json();
-    const { displayName, bio, avatarUrl, username, fakulte, fakulteGizli } = body as {
+    const { displayName, bio, avatarUrl, username, fakulte, fakulteGizli, topics, allowMentions, schoolEmail, phoneNumber } = body as {
       displayName?: string;
       bio?: string;
       avatarUrl?: string;
       username?: string;
       fakulte?: string;
       fakulteGizli?: boolean;
+      topics?: number[];
+      allowMentions?: boolean;
+      schoolEmail?: string;
+      phoneNumber?: string;
     };
 
     const updatePayload: Record<string, any> = {
       updated_at: new Date().toISOString(),
     };
+
+    if (typeof allowMentions === 'boolean') {
+      updatePayload['allow_mentions'] = allowMentions;
+    }
+
+    if (typeof schoolEmail === 'string') {
+      updatePayload['school_email'] = schoolEmail.trim().toLowerCase();
+    }
+
+    if (typeof phoneNumber === 'string') {
+      updatePayload['phone_number'] = phoneNumber.trim();
+    }
 
     if (typeof fakulte === 'string') {
       const trimmedFakulte = fakulte.trim();
@@ -112,16 +128,67 @@ export async function POST(request: NextRequest) {
       updatePayload['avatar_url'] = avatarUrl.trim();
     }
 
-    const { data, error } = await supabaseAdmin
-      .from('kullanicilar')
-      .update(updatePayload)
-      .eq('id', decoded.uid)
-      .select('*')
-      .single();
+    let queryResult;
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('kullanicilar')
+        .update(updatePayload)
+        .eq('id', decoded.uid)
+        .select('*')
+        .single();
+      
+      if (error) throw error;
+      queryResult = data;
+    } catch (err: any) {
+      if (
+        err.message?.includes('allow_mentions') || 
+        err.message?.includes('school_email') || 
+        err.message?.includes('phone_number') || 
+        err.code === '42703'
+      ) {
+        console.warn('[User Update] Eksik kolon hatası, veritabanı şeması güncel olmayabilir. Güvenli fallback modda deneniyor...');
+        delete updatePayload['allow_mentions'];
+        delete updatePayload['school_email'];
+        delete updatePayload['phone_number'];
+        const { data, error: retryError } = await supabaseAdmin
+          .from('kullanicilar')
+          .update(updatePayload)
+          .eq('id', decoded.uid)
+          .select('*')
+          .single();
+        if (retryError) throw retryError;
+        queryResult = data;
+      } else {
+        throw err;
+      }
+    }
 
-    if (error) throw error;
+    // Etiket/İlgi alanları (topics) güncelleniyor
+    if (Array.isArray(topics)) {
+      // 1. Önceki ilgi alanlarını temizle
+      const { error: deleteErr } = await supabaseAdmin
+        .from('yazar_konulari')
+        .delete()
+        .eq('yazar_id', decoded.uid);
 
-    return NextResponse.json({ user: data });
+      if (deleteErr) throw deleteErr;
+
+      // 2. Yeni ilgi alanlarını ekle
+      if (topics.length > 0) {
+        const insertRows = topics.map((topicId) => ({
+          yazar_id: decoded.uid,
+          konu_id: topicId,
+        }));
+
+        const { error: insertErr } = await supabaseAdmin
+          .from('yazar_konulari')
+          .insert(insertRows);
+
+        if (insertErr) throw insertErr;
+      }
+    }
+
+    return NextResponse.json({ user: queryResult });
   } catch (err) {
     console.error('[User Update API] Hata:', err);
     return NextResponse.json({ error: 'Profil güncellenemedi' }, { status: 500 });

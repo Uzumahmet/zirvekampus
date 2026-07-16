@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import MentionTextarea from '@/components/shared/mention-textarea';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Send, EyeOff, Loader2, LogIn } from 'lucide-react';
@@ -77,8 +78,7 @@ export default function EntryForm({ topicId }: EntryFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <h3 className="font-semibold text-sm">Entry Yaz</h3>
 
-      {/* Metin Alanı */}
-      <textarea
+      <MentionTextarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="Buraya düşüncelerini yaz..."

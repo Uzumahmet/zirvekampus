@@ -13,6 +13,7 @@ interface YazarKartProps {
   yazar: YazarProfile;
   index: number;
   baslangicTakip?: boolean;
+  hideRoleBadge?: boolean;
 }
 
 const cardVariants = {
@@ -24,7 +25,7 @@ const cardVariants = {
   }),
 };
 
-export default function YazarKart({ yazar, index, baslangicTakip = false }: YazarKartProps) {
+export default function YazarKart({ yazar, index, baslangicTakip = false, hideRoleBadge = false }: YazarKartProps) {
   const { firebaseUser, isAuthenticated, dbUser } = useAuth();
   const [isFollowing, setIsFollowing] = useState(baslangicTakip);
   const [isPending, startTransition] = useTransition();
@@ -74,7 +75,7 @@ export default function YazarKart({ yazar, index, baslangicTakip = false }: Yaza
 
       {/* Üst: Avatar + İsim */}
       <div className="flex items-start justify-between mb-5">
-        <Link href={`/yazar/${yazar.username}`} className="flex items-center gap-3 group/link">
+        <Link href={`/${yazar.username}`} className="flex items-center gap-3 group/link">
           {yazar.avatar_url ? (
             <Image
               src={yazar.avatar_url}
@@ -93,12 +94,12 @@ export default function YazarKart({ yazar, index, baslangicTakip = false }: Yaza
               {displayName}
             </p>
             <p className="text-xs text-muted-foreground">@{yazar.username}</p>
-            {yazar.role === 'editor' && (
+            {!hideRoleBadge && yazar.role === 'editor' && (
               <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-erciyes-gold/15 text-erciyes-gold border border-erciyes-gold/30">
                 Editör
               </span>
             )}
-            {yazar.role === 'admin' && (
+            {!hideRoleBadge && yazar.role === 'admin' && (
               <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
                 Admin
               </span>

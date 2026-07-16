@@ -4,7 +4,18 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "TANITIM.md",
+      "proje.cd",
+      "projeler_migration.sql",
+      "storage.rules",
+      "firebase-debug.log",
+      "*.bat",
+      "*.sql",
+      "*.md"
     ]
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
 }

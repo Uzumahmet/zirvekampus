@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${article.title} | Erciyes Kampüs`,
     description,
-    authors: author ? [{ name: author.display_name ?? author.username, url: `${appUrl}/yazar/${author.username}` }] : [],
+    authors: author ? [{ name: author.display_name ?? author.username, url: `${appUrl}/${author.username}` }] : [],
     openGraph: {
       title: article.title,
       description,
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         : [],
       publishedTime: article.created_at,
       modifiedTime: article.updated_at,
-      authors: author ? [`${appUrl}/yazar/${author.username}`] : [],
+      authors: author ? [`${appUrl}/${author.username}`] : [],
       siteName: 'Erciyes Kampüs',
     },
     twitter: {
@@ -111,7 +111,7 @@ export default async function MakaleDetayPage({ params }: Props) {
           {
             '@type': 'Person',
             name: article.author.display_name ?? article.author.username,
-            url: `${appUrl}/yazar/${article.author.username}`,
+            url: `${appUrl}/${article.author.username}`,
           },
         ]
       : [],
@@ -175,7 +175,7 @@ export default async function MakaleDetayPage({ params }: Props) {
         {/* Meta Bilgileri */}
         <div className="flex items-center justify-between flex-wrap gap-4 pb-6 mb-6 border-b border-border">
           <Link
-            href={`/yazar/${article.author?.username}`}
+            href={`/${article.author?.username}`}
             className="flex items-center gap-3 group"
           >
             {article.author?.avatar_url ? (

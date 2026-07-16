@@ -37,6 +37,8 @@ export async function GET(request: NextRequest) {
 
     if (fakulte) {
       queryBuilder = queryBuilder.eq('fakulte', fakulte);
+    } else {
+      queryBuilder = queryBuilder.not('fakulte', 'eq', 'gonderi');
     }
 
     if (query) {
@@ -101,11 +103,12 @@ export async function POST(request: NextRequest) {
   try {
     const decoded = await verifyFirebaseToken(token);
     const body = await request.json();
-    const { title, description, imageUrls, fakulte } = body as {
+    const { title, description, imageUrls, fakulte, aspectRatio } = body as {
       title: string;
       description: string;
       imageUrls: string[];
       fakulte: string;
+      aspectRatio?: string;
     };
 
     if (!title?.trim() || !description?.trim()) {
@@ -125,6 +128,7 @@ export async function POST(request: NextRequest) {
         image_urls: imageUrls || [],
         author_id: decoded.uid,
         fakulte: fakulte,
+        aspect_ratio: aspectRatio || '1:1'
       })
       .select('*')
       .single();

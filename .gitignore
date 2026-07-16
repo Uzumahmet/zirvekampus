@@ -30,3 +30,12 @@ yarn-error.log*
 # TypeScript derleme hataları
 *.tsbuildinfo
 next-env.d.ts
+
+# Sadece yerel kalacak dosyalar (GitHub'a ve sunucuya gönderilmez)
+TANITIM.md
+proje.cd
+storage.rules
+projeler_migration.sql
+
+# Firebase debug logları
+firebase-debug.log

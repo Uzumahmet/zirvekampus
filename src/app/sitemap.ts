@@ -38,7 +38,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'hourly',
       priority: 0.8,
     },
+    {
+      url: `${appUrl}/kulupler`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
   ];
+
+  // ─── Dinamik Kulüpler ─────────────────────────────────────────
+  const { data: kulupler } = await supabaseAdmin
+    .from('clubs')
+    .select('slug, updated_at')
+    .order('updated_at', { ascending: false })
+    .limit(500);
+
+  const kulupRoutes: MetadataRoute.Sitemap = (kulupler ?? []).map((k) => ({
+    url: `${appUrl}/kulupler/${k.slug}`,
+    lastModified: new Date(k.updated_at ?? new Date()),
+    changeFrequency: 'daily',
+    priority: 0.80,
+  }));
 
   // ─── Dinamik Makaleler ───────────────────────────────────────
   const { data: makaleler } = await supabaseAdmin
@@ -62,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .limit(1000); // En aktif 1000 profil
 
   const yazarRoutes: MetadataRoute.Sitemap = (kullanicilar ?? []).map((y) => ({
-    url: `${appUrl}/yazar/${y.username}`,
+    url: `${appUrl}/${y.username}`,
     lastModified: new Date(y.updated_at),
     changeFrequency: 'weekly',
     priority: 0.75,
@@ -97,6 +117,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...makaleRoutes, ...yazarRoutes, ...forumRoutes, ...koleksiyonRoutes];
+  // ─── Dinamik Projeler ───────────────────────────────────────
+  const { data: projeler } = await supabaseAdmin
+    .from('projeler')
+    .select('id, updated_at')
+    .order('updated_at', { ascending: false })
+    .limit(500);
+
+  const projeRoutes: MetadataRoute.Sitemap = (projeler ?? []).map((p) => ({
+    url: `${appUrl}/projeler/${p.id}`,
+    lastModified: new Date(p.updated_at),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...makaleRoutes,
+    ...projeRoutes,
+    ...yazarRoutes,
+    ...forumRoutes,
+    ...koleksiyonRoutes,
+    ...kulupRoutes
+  ];
 }
 

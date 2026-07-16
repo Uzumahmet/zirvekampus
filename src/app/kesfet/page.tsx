@@ -5,20 +5,25 @@ import type { YazarProfile, Proje, Makale } from '@/types';
 import KesfetListesi from './kesfet-listesi';
 
 export const metadata: Metadata = {
-  title: 'Keşfet | Erüatical',
+  title: 'Keşfet | Zirve Kampüs',
   description:
     'Erciyes Üniversitesi öğrencilerinin projelerini ve makalelerini keşfedin. Kullanıcıları arayın ve takip edin.',
 };
 
-// 1 dakikada bir ISR — yeni içerik gelince hızlıca güncellenir
-export const revalidate = 60;
+// Her zaman taze veri - kullanıcılar anında görünsün
+export const dynamic = 'force-dynamic';
 
 async function getKesfetVerisi() {
   // 1. Kullanıcıları getir
-  const { data: kullanicilar } = await supabaseAdmin
+  const { data: kullanicilar, error: kullanicilarError } = await supabaseAdmin
     .from('kullanicilar')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(200);
+
+  if (kullanicilarError) {
+    console.error('[Keşfet] Kullanıcılar çekilirken hata:', kullanicilarError);
+  }
 
   // Her kullanıcı için istatistikleri çek
   const yazarProfilleri: YazarProfile[] = [];
@@ -67,6 +72,7 @@ async function getKesfetVerisi() {
       *,
       author:kullanicilar!projeler_author_id_fkey(username, display_name, avatar_url)
     `)
+    .not('fakulte', 'eq', 'gonderi')
     .order('views_count', { ascending: false })
     .limit(20);
 
@@ -81,15 +87,48 @@ async function getKesfetVerisi() {
     .order('views_count', { ascending: false })
     .limit(20);
 
+  // 4. Gönderileri getir
+  const { data: gonderiler } = await supabaseAdmin
+    .from('projeler')
+    .select(`
+      *,
+      author:kullanicilar!projeler_author_id_fkey(username, display_name, avatar_url)
+    `)
+    .eq('fakulte', 'gonderi')
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  // 5. Kulüpleri getir
+  const { data: clubs } = await supabaseAdmin
+    .from('clubs')
+    .select('*, founder:founder_id(username, display_name, avatar_url), president:president_id(username, display_name, avatar_url)')
+    .order('name', { ascending: true });
+
+  const clubsWithMemberCount = await Promise.all(
+    (clubs || []).map(async (club) => {
+      const { count } = await supabaseAdmin
+        .from('club_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('club_id', club.id)
+        .eq('status', 'approved');
+      return {
+        ...club,
+        member_count: count || 0,
+      };
+    })
+  );
+
   return {
     kullanicilar: yazarProfilleri,
     projeler: (projeler ?? []) as any[],
     makaleler: (makaleler ?? []) as any[],
+    gonderiler: (gonderiler ?? []) as any[],
+    clubs: clubsWithMemberCount,
   };
 }
 
 export default async function KesfetPage() {
-  const { kullanicilar, projeler, makaleler } = await getKesfetVerisi();
+  const { kullanicilar, projeler, makaleler, gonderiler, clubs } = await getKesfetVerisi();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -104,7 +143,7 @@ export default async function KesfetPage() {
           </h1>
         </div>
         <p className="text-muted-foreground max-w-xl mx-auto sm:mx-0 text-sm">
-          Erciyes Üniversitesi topluluğundaki projeleri, makaleleri ve öğrencileri keşfedin. Zamanla ilgi alanlarınıza ve fakültenize göre özelleşen içerikleri inceleyin.
+          Erciyes Üniversitesi topluluğundaki projeleri, makaleleri, öğrencileri ve kulüpleri keşfedin.
         </p>
       </div>
 
@@ -112,6 +151,8 @@ export default async function KesfetPage() {
         kullanicilar={kullanicilar}
         projeler={projeler}
         makaleler={makaleler}
+        gonderiler={gonderiler}
+        clubs={clubs}
       />
     </div>
   );

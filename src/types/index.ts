@@ -26,7 +26,7 @@ export type KaydedilenForum = Database['public']['Tables']['kaydedilen_forumlar'
 
 /** Makale kartında gösterilecek veriler (yazar bilgisi dahil) */
 export type MakaleWithAuthor = Makale & {
-  author: Pick<Kullanici, 'username' | 'display_name' | 'avatar_url'> | null;
+  author: Pick<Kullanici, 'username' | 'display_name' | 'avatar_url' | 'fakulte'> | null;
   konular: Konu[];
 };
 
@@ -65,7 +65,7 @@ export type AuthUser = {
 /** Veritabanındaki kullanıcı profilini içeren tam auth durumu */
 export type AuthState = {
   firebaseUser: AuthUser | null;
-  dbUser: Kullanici | null;
+  dbUser: (Kullanici & { topics?: number[]; allow_mentions?: boolean }) | null;
   isLoading: boolean;
   isAuthenticated: boolean;
 };
@@ -138,7 +138,7 @@ export type Proje = {
 };
 
 export type ProjeWithAuthor = Proje & {
-  author: Pick<Kullanici, 'username' | 'display_name' | 'avatar_url'> | null;
+  author: Pick<Kullanici, 'username' | 'display_name' | 'avatar_url' | 'fakulte'> | null;
   liked_by_me?: boolean;
   comment_count?: number;
 };

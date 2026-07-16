@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ProjeWithAuthor, ProjeYorumWithAuthor } from '@/types';
+import MentionTextarea from '@/components/shared/mention-textarea';
 
 interface ProjectDetail extends ProjeWithAuthor {
   comments: ProjeYorumWithAuthor[];
@@ -232,7 +233,7 @@ export default function ProjeDetayPage({ params }: { params: { id: string } }) {
           
           {/* Yazar Bilgisi Başlık */}
           <div className="p-4 border-b border-border flex items-center justify-between">
-            <Link href={`/yazar/${project.author?.username}`} className="flex items-center gap-3 group">
+            <Link href={`/${project.author?.username}`} className="flex items-center gap-3 group">
               {project.author?.avatar_url ? (
                 <div className="relative w-9 h-9 rounded-full overflow-hidden border border-border">
                   <Image src={project.author.avatar_url} alt={authorName} fill className="object-cover" />
@@ -311,7 +312,7 @@ export default function ProjeDetayPage({ params }: { params: { id: string } }) {
                   const commAuthorName = comment.author?.display_name ?? comment.author?.username ?? 'Öğrenci';
                   return (
                     <div key={comment.id} className="flex gap-2.5 text-xs items-start">
-                      <Link href={`/yazar/${comment.author?.username}`}>
+                      <Link href={`/${comment.author?.username}`}>
                         {comment.author?.avatar_url ? (
                           <div className="relative w-7 h-7 rounded-full overflow-hidden flex-shrink-0 border border-border">
                             <Image src={comment.author.avatar_url} alt={commAuthorName} fill className="object-cover" />
@@ -324,7 +325,7 @@ export default function ProjeDetayPage({ params }: { params: { id: string } }) {
                       </Link>
                       <div className="bg-card border border-border/50 rounded-2xl p-3 flex-1 min-w-0">
                         <div className="flex justify-between items-baseline gap-2 mb-1">
-                          <Link href={`/yazar/${comment.author?.username}`} className="font-bold text-foreground hover:underline">
+                          <Link href={`/${comment.author?.username}`} className="font-bold text-foreground hover:underline">
                             @{comment.author?.username}
                           </Link>
                           <span className="text-[9px] text-muted-foreground">
@@ -350,7 +351,8 @@ export default function ProjeDetayPage({ params }: { params: { id: string } }) {
                   <div className="text-[10px] text-destructive mb-1 font-semibold">{commentError}</div>
                 )}
                 <div className="relative flex items-center">
-                  <input
+                  <MentionTextarea
+                    as="input"
                     type="text"
                     placeholder={t('projects.writeComment')}
                     value={commentContent}

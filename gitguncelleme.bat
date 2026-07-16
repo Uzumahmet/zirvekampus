@@ -1,9 +1,9 @@
 @echo off
 cls
-title Erüatical - Git Guncelleme Sihirbazi
+title Zirve Kampüs - Git Guncelleme Sihirbazi
 
 echo =======================================================
-echo          ERUATICAL GIT GUNCELLEME SIHIRBAZI
+echo          ZIRVE KAMPUS GIT GUNCELLEME SIHIRBAZI
 echo =======================================================
 echo.
 
